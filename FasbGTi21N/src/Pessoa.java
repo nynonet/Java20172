@@ -19,7 +19,7 @@ public class Pessoa {
     private String olhos; //Cor dos Olhos da Pessoa 
 
     public void setIdade(int idade) {
-        this.idade = idade;
+        this.idade = idade; 
     }
 
     public int getIdade() {

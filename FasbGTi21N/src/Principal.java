@@ -26,7 +26,12 @@ public class Principal {
         System.out.println( "Idade: "+ pes1.getIdade() + " anos" );
         System.out.println( "Peso: "+ pes1.getPeso() + "Kg" );
         
-        Pessoa pes2 = new Pessoa();
+        Pessoa a = new Pessoa();
+        Homens h = new Homens();
+        Mulheres m = new Mulheres();
+        
+      
+
   
 //        System.out.println( pes1.nome );
 //        System.out.println( pes2.nome );
