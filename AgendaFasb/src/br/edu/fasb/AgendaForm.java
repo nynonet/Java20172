@@ -15,7 +15,30 @@ public class AgendaForm extends javax.swing.JFrame {
      * Creates new form AgendaForm
      */
     public AgendaForm() {
+        
         initComponents();
+       
+        ControleBotoes( false );     
+        
+    }
+    
+    /**
+     * Método para controlar os botões na tela
+     * habilita 
+     *  se for == true deve-se: ativar os botões salvar e cancelar
+     *  se for == false deve-se: desativar os botões
+     *  salvar e cancelar
+     */
+    private void ControleBotoes(boolean habilita){
+        btn_salvar.setEnabled( habilita );
+        btn_cancelar.setEnabled( habilita );
+        //esses abaixo será invertido o valor recebido
+        btn_novo.setEnabled( ! habilita );
+        btn_alterar.setEnabled( ! habilita );
+        btn_deletar.setEnabled( ! habilita );
+        btn_finalizar.setEnabled( ! habilita );
+        
+        edit_nome.setEditable( habilita );
     }
 
     /**
@@ -74,15 +97,35 @@ public class AgendaForm extends javax.swing.JFrame {
 
         btn_salvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/edu/fasb/imagens/salvar.png"))); // NOI18N
         btn_salvar.setText("Salvar");
+        btn_salvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_salvarActionPerformed(evt);
+            }
+        });
 
         btn_cancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/edu/fasb/imagens/cancelar.png"))); // NOI18N
         btn_cancelar.setText("Cancelar");
+        btn_cancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_cancelarActionPerformed(evt);
+            }
+        });
 
         btn_novo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/edu/fasb/imagens/novo.jpg"))); // NOI18N
         btn_novo.setText("Novo");
+        btn_novo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_novoActionPerformed(evt);
+            }
+        });
 
         btn_alterar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/edu/fasb/imagens/editar.png"))); // NOI18N
         btn_alterar.setText("Alterar");
+        btn_alterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_alterarActionPerformed(evt);
+            }
+        });
 
         btn_deletar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/edu/fasb/imagens/excluir.png"))); // NOI18N
         btn_deletar.setText("Deletar");
@@ -191,8 +234,28 @@ public class AgendaForm extends javax.swing.JFrame {
 
     private void btn_finalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_finalizarActionPerformed
         // TODO add your handling code here:
-        System.exit(0);
+        System.exit( 0 );
     }//GEN-LAST:event_btn_finalizarActionPerformed
+
+    private void btn_salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_salvarActionPerformed
+        // cliquei no botão salvar 
+        ControleBotoes( false ); //desativar o botão
+    }//GEN-LAST:event_btn_salvarActionPerformed
+
+    private void btn_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelarActionPerformed
+        // cliquei no botão cancelar
+        ControleBotoes( false ); //desativar o botão
+    }//GEN-LAST:event_btn_cancelarActionPerformed
+
+    private void btn_novoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_novoActionPerformed
+        // cliquei no botão Novo 
+        ControleBotoes( true ); //ativar o botão
+    }//GEN-LAST:event_btn_novoActionPerformed
+
+    private void btn_alterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_alterarActionPerformed
+        // cliquei no botão Alterar
+        ControleBotoes( true ); //ativar o botão
+    }//GEN-LAST:event_btn_alterarActionPerformed
 
     /**
      * @param args the command line arguments
