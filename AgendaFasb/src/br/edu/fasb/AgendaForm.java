@@ -5,6 +5,8 @@
  */
 package br.edu.fasb;
 
+import javax.swing.DefaultComboBoxModel;
+
 /**
  *
  * @author Andeson
@@ -17,9 +19,17 @@ public class AgendaForm extends javax.swing.JFrame {
     public AgendaForm() {
         
         initComponents();
-       
+        CarregaDados();
         ControleBotoes( false );     
         
+    }
+    
+    /**
+     * Método responsável por carregar os dados 
+     * iniciais da aplicação
+     */
+    private void CarregaDados() {
+        comb_tipo.setModel( new DefaultComboBoxModel(Tipos.values()));
     }
     
     /**
@@ -38,7 +48,14 @@ public class AgendaForm extends javax.swing.JFrame {
         btn_deletar.setEnabled( ! habilita );
         btn_finalizar.setEnabled( ! habilita );
         
+        //controla se edita ou não os dados
         edit_nome.setEditable( habilita );
+        edit_fixo.setEditable( habilita );
+        edit_celular.setEditable( habilita );
+        edit_email.setEditable( habilita );
+        
+        comb_tipo.setEnabled( habilita );
+        list_contatos.setEnabled( ! habilita );
     }
 
     /**
@@ -85,6 +102,14 @@ public class AgendaForm extends javax.swing.JFrame {
         jLabel5.setText("E-Mail");
 
         jLabel6.setText("Tipo de Contato");
+
+        edit_nome.setText("lsdjaklsdjsa");
+
+        edit_fixo.setText("asd");
+
+        edit_celular.setText("asdasd");
+
+        edit_email.setText("asdasdasd");
 
         comb_tipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -239,6 +264,13 @@ public class AgendaForm extends javax.swing.JFrame {
 
     private void btn_salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_salvarActionPerformed
         // cliquei no botão salvar 
+        Contato novo = new Contato();
+        novo.setNome( edit_nome.getText() );
+        novo.setTelefone( edit_fixo.getText() );
+        novo.setCelular( edit_celular.getText() );
+        novo.setEmail( edit_email.getText() );
+        novo.setTipo( (Tipos) comb_tipo.getSelectedItem() );
+        
         ControleBotoes( false ); //desativar o botão
     }//GEN-LAST:event_btn_salvarActionPerformed
 
@@ -250,6 +282,12 @@ public class AgendaForm extends javax.swing.JFrame {
     private void btn_novoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_novoActionPerformed
         // cliquei no botão Novo 
         ControleBotoes( true ); //ativar o botão
+        edit_nome.setText("");
+        edit_fixo.setText("");
+        edit_celular.setText("");
+        edit_email.setText("");
+        comb_tipo.setSelectedIndex(-1);
+        edit_nome.setFocusable( true );
     }//GEN-LAST:event_btn_novoActionPerformed
 
     private void btn_alterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_alterarActionPerformed

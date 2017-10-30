@@ -172,12 +172,24 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="edit_nome">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="lsdjaklsdjsa"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="edit_fixo">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="asd"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="edit_celular">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="asdasd"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="edit_email">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="asdasdasd"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="comb_tipo">
       <Properties>
