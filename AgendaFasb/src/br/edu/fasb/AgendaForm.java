@@ -6,13 +6,17 @@
 package br.edu.fasb;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author Andeson
  */
 public class AgendaForm extends javax.swing.JFrame {
-
+    
+    private DefaultListModel modeloLista = new DefaultListModel();
+    
     /**
      * Creates new form AgendaForm
      */
@@ -21,15 +25,15 @@ public class AgendaForm extends javax.swing.JFrame {
         initComponents();
         CarregaDados();
         ControleBotoes( false );     
-        
     }
-    
+        
     /**
      * Método responsável por carregar os dados 
      * iniciais da aplicação
      */
     private void CarregaDados() {
         comb_tipo.setModel( new DefaultComboBoxModel(Tipos.values()));
+        list_contatos.setModel( modeloLista );
     }
     
     /**
@@ -154,6 +158,11 @@ public class AgendaForm extends javax.swing.JFrame {
 
         btn_deletar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/edu/fasb/imagens/excluir.png"))); // NOI18N
         btn_deletar.setText("Deletar");
+        btn_deletar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_deletarActionPerformed(evt);
+            }
+        });
 
         btn_finalizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/edu/fasb/imagens/Fechar.png"))); // NOI18N
         btn_finalizar.setText("Finalizar");
@@ -264,6 +273,32 @@ public class AgendaForm extends javax.swing.JFrame {
 
     private void btn_salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_salvarActionPerformed
         // cliquei no botão salvar 
+        
+        //validação dos campos obrigatórios 
+        if ( edit_nome.getText().trim().isEmpty() ) {
+            JOptionPane.showMessageDialog(rootPane, 
+                           "Informe o nome do Contato!");
+            edit_nome.requestFocus();
+            return;
+        }
+        
+        if ( edit_fixo.getText().trim().isEmpty() &&
+             edit_celular.getText().trim().isEmpty() ) {
+            
+            JOptionPane.showMessageDialog(null, 
+                           "Informe o número do fixo ou do celular!");
+            edit_fixo.requestFocus();
+            return;
+        }
+        
+        if ( comb_tipo.getSelectedIndex() == -1 ) {
+            JOptionPane.showMessageDialog(rootPane, 
+                        "Informe o tipo de contato!");
+            comb_tipo.requestFocus();
+            return;
+        }
+        
+        //gravar
         Contato novo = new Contato();
         novo.setNome( edit_nome.getText() );
         novo.setTelefone( edit_fixo.getText() );
@@ -271,6 +306,8 @@ public class AgendaForm extends javax.swing.JFrame {
         novo.setEmail( edit_email.getText() );
         novo.setTipo( (Tipos) comb_tipo.getSelectedItem() );
         
+        modeloLista.addElement(novo);
+
         ControleBotoes( false ); //desativar o botão
     }//GEN-LAST:event_btn_salvarActionPerformed
 
@@ -294,6 +331,13 @@ public class AgendaForm extends javax.swing.JFrame {
         // cliquei no botão Alterar
         ControleBotoes( true ); //ativar o botão
     }//GEN-LAST:event_btn_alterarActionPerformed
+
+    private void btn_deletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_deletarActionPerformed
+        // TODO add your handling code here:
+        //verificação se há itens na lista
+        
+        
+    }//GEN-LAST:event_btn_deletarActionPerformed
 
     /**
      * @param args the command line arguments
