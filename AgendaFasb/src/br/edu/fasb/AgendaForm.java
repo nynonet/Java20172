@@ -14,52 +14,64 @@ import javax.swing.JOptionPane;
  * @author Andeson
  */
 public class AgendaForm extends javax.swing.JFrame {
-    
+
     private DefaultListModel modeloLista = new DefaultListModel();
     
+
     /**
      * Creates new form AgendaForm
      */
     public AgendaForm() {
-        
+
         initComponents();
         CarregaDados();
-        ControleBotoes( false );     
+        ControleBotoes(false);
+              
     }
-        
+
     /**
-     * Método responsável por carregar os dados 
-     * iniciais da aplicação
+     * Método responsável por carregar os dados iniciais da aplicação
      */
     private void CarregaDados() {
-        comb_tipo.setModel( new DefaultComboBoxModel(Tipos.values()));
-        list_contatos.setModel( modeloLista );
+        comb_tipo.setModel(new DefaultComboBoxModel(Tipos.values()));
+        list_contatos.setModel(modeloLista);
     }
-    
+
     /**
-     * Método para controlar os botões na tela
-     * habilita 
-     *  se for == true deve-se: ativar os botões salvar e cancelar
-     *  se for == false deve-se: desativar os botões
-     *  salvar e cancelar
+     * Método para controlar os botões na tela habilita se for == true deve-se:
+     * ativar os botões salvar e cancelar se for == false deve-se: desativar os
+     * botões salvar e cancelar
      */
-    private void ControleBotoes(boolean habilita){
-        btn_salvar.setEnabled( habilita );
-        btn_cancelar.setEnabled( habilita );
+    private void ControleBotoes(boolean habilita) {
+        btn_salvar.setEnabled(habilita);
+        btn_cancelar.setEnabled(habilita);
         //esses abaixo será invertido o valor recebido
-        btn_novo.setEnabled( ! habilita );
-        btn_alterar.setEnabled( ! habilita );
-        btn_deletar.setEnabled( ! habilita );
-        btn_finalizar.setEnabled( ! habilita );
-        
+        btn_novo.setEnabled(!habilita);
+        btn_alterar.setEnabled(!habilita);
+        btn_deletar.setEnabled(!habilita);
+        btn_finalizar.setEnabled(!habilita);
+
         //controla se edita ou não os dados
-        edit_nome.setEditable( habilita );
-        edit_fixo.setEditable( habilita );
-        edit_celular.setEditable( habilita );
-        edit_email.setEditable( habilita );
-        
-        comb_tipo.setEnabled( habilita );
-        list_contatos.setEnabled( ! habilita );
+        edit_nome.setEditable(habilita);
+        edit_fixo.setEditable(habilita);
+        edit_celular.setEditable(habilita);
+        edit_email.setEditable(habilita);
+
+        comb_tipo.setEnabled(habilita);
+        list_contatos.setEnabled(!habilita);
+    }
+
+    /**
+     * Vai atualizar os campos do formulário recebendo um contato
+     *
+     * @param c contato que será mostrado na tela
+     */
+    private void MostraContato(Contato c) {
+        edit_nome.setText(c.getNome());
+        edit_celular.setText(c.getCelular());
+        edit_fixo.setText(c.getTelefone());
+        edit_email.setText(c.getEmail());
+        comb_tipo.setSelectedItem((Tipos) c.getTipo());
     }
 
     /**
@@ -121,6 +133,11 @@ public class AgendaForm extends javax.swing.JFrame {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
+        });
+        list_contatos.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                list_contatosValueChanged(evt);
+            }
         });
         jScrollPane1.setViewportView(list_contatos);
 
@@ -268,76 +285,106 @@ public class AgendaForm extends javax.swing.JFrame {
 
     private void btn_finalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_finalizarActionPerformed
         // TODO add your handling code here:
-        System.exit( 0 );
+        System.exit(0);
     }//GEN-LAST:event_btn_finalizarActionPerformed
 
     private void btn_salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_salvarActionPerformed
         // cliquei no botão salvar 
-        
+
         //validação dos campos obrigatórios 
-        if ( edit_nome.getText().trim().isEmpty() ) {
-            JOptionPane.showMessageDialog(rootPane, 
-                           "Informe o nome do Contato!");
+        if (edit_nome.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(rootPane,
+                    "Informe o nome do Contato!");
             edit_nome.requestFocus();
             return;
         }
-        
-        if ( edit_fixo.getText().trim().isEmpty() &&
-             edit_celular.getText().trim().isEmpty() ) {
-            
-            JOptionPane.showMessageDialog(null, 
-                           "Informe o número do fixo ou do celular!");
+
+        if (edit_fixo.getText().trim().isEmpty()
+                && edit_celular.getText().trim().isEmpty()) {
+
+            JOptionPane.showMessageDialog(null,
+                    "Informe o número do fixo ou do celular!");
             edit_fixo.requestFocus();
             return;
         }
-        
-        if ( comb_tipo.getSelectedIndex() == -1 ) {
-            JOptionPane.showMessageDialog(rootPane, 
-                        "Informe o tipo de contato!");
+
+        if (comb_tipo.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(rootPane,
+                    "Informe o tipo de contato!");
             comb_tipo.requestFocus();
             return;
         }
-        
+
         //gravar
         Contato novo = new Contato();
-        novo.setNome( edit_nome.getText() );
-        novo.setTelefone( edit_fixo.getText() );
-        novo.setCelular( edit_celular.getText() );
-        novo.setEmail( edit_email.getText() );
-        novo.setTipo( (Tipos) comb_tipo.getSelectedItem() );
-        
+        novo.setNome(edit_nome.getText());
+        novo.setTelefone(edit_fixo.getText());
+        novo.setCelular(edit_celular.getText());
+        novo.setEmail(edit_email.getText());
+        novo.setTipo((Tipos) comb_tipo.getSelectedItem());
+
         modeloLista.addElement(novo);
 
-        ControleBotoes( false ); //desativar o botão
+        ControleBotoes(false); //desativar o botão
     }//GEN-LAST:event_btn_salvarActionPerformed
 
     private void btn_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelarActionPerformed
         // cliquei no botão cancelar
-        ControleBotoes( false ); //desativar o botão
+        ControleBotoes(false); //desativar o botão
     }//GEN-LAST:event_btn_cancelarActionPerformed
 
     private void btn_novoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_novoActionPerformed
         // cliquei no botão Novo 
-        ControleBotoes( true ); //ativar o botão
+        ControleBotoes(true); //ativar o botão
         edit_nome.setText("");
         edit_fixo.setText("");
         edit_celular.setText("");
         edit_email.setText("");
         comb_tipo.setSelectedIndex(-1);
-        edit_nome.setFocusable( true );
+        edit_nome.setFocusable(true);
     }//GEN-LAST:event_btn_novoActionPerformed
 
     private void btn_alterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_alterarActionPerformed
         // cliquei no botão Alterar
-        ControleBotoes( true ); //ativar o botão
+        ControleBotoes(true); //ativar o botão
     }//GEN-LAST:event_btn_alterarActionPerformed
 
     private void btn_deletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_deletarActionPerformed
         // TODO add your handling code here:
+
         //verificação se há itens na lista
+        if (list_contatos.getSelectedIndex() < 0) {
+            JOptionPane.showMessageDialog(rootPane,
+                    "Não há contato para apagar"
+                    + "\nOu você não selecionou nenhum contato.!");
+            return;
+        }
+
+        //captura o item que desejamos apagar;
+        int index = list_contatos.getSelectedIndex();
+
+        if (JOptionPane.showConfirmDialog(rootPane, 
+                "Confirma a exclusão?", 
+                "Remover Contato", 
+                JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+            return;
+        }
         
-        
+        //remove da lista o item que foi selecionado.
+        modeloLista.remove(index);
+
     }//GEN-LAST:event_btn_deletarActionPerformed
+
+    private void list_contatosValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_list_contatosValueChanged
+        // TODO add your handling code here:
+        int index = list_contatos.getSelectedIndex();
+
+        if (index >= 0) {
+            Contato sel = (Contato) modeloLista.get(index);
+            MostraContato(sel);
+        }
+
+    }//GEN-LAST:event_list_contatosValueChanged
 
     /**
      * @param args the command line arguments
