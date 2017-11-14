@@ -45,9 +45,29 @@ public class AgendaForm extends javax.swing.JFrame {
     private void ControleBotoes(boolean habilita) {
         btn_salvar.setEnabled(habilita);
         btn_cancelar.setEnabled(habilita);
+        btnMostra.setEnabled(habilita);
+        
         //esses abaixo será invertido o valor recebido
         btn_novo.setEnabled(!habilita);
-        btn_alterar.setEnabled(!habilita);
+        
+//        if (!habilita) {
+//            //se não habilitar
+//            btn_alterar.setEnabled( false );
+//        } else {
+//            //se habilitar
+//            if (modeloLista.isEmpty()) {
+//                btn_alterar.setEnabled( false );
+//            } else {
+//                btn_alterar.setEnabled( true );
+//            }
+//        }
+        
+        btn_alterar.setEnabled( ( !habilita && !modeloLista.isEmpty() ) );
+        /**
+         * Se Habilita = true e ModeloLista vazio restulado é [False]
+         * Se habilita = false e Modelolista não vazio resultado é [False]
+         * Se habilita = true e ModeloLista não vazio o resultao é [True]
+         */
         btn_deletar.setEnabled(!habilita);
         btn_finalizar.setEnabled(!habilita);
 
@@ -102,6 +122,7 @@ public class AgendaForm extends javax.swing.JFrame {
         btn_alterar = new javax.swing.JButton();
         btn_deletar = new javax.swing.JButton();
         btn_finalizar = new javax.swing.JButton();
+        btnMostra = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Agenda de Contatos");
@@ -189,6 +210,13 @@ public class AgendaForm extends javax.swing.JFrame {
             }
         });
 
+        btnMostra.setText("Mostra");
+        btnMostra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMostraActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -207,14 +235,13 @@ public class AgendaForm extends javax.swing.JFrame {
                                         .addGap(68, 68, 68))
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addComponent(edit_fixo, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel4)
                                     .addComponent(edit_celular, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel5)
-                                    .addComponent(comb_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel1)
                                     .addComponent(jLabel6)
                                     .addGroup(layout.createSequentialGroup()
@@ -227,7 +254,11 @@ public class AgendaForm extends javax.swing.JFrame {
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(btn_alterar)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(btn_deletar)))))
+                                                .addComponent(btn_deletar))))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(comb_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnMostra, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,7 +295,9 @@ public class AgendaForm extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(comb_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(comb_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnMostra))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btn_salvar)
@@ -372,6 +405,12 @@ public class AgendaForm extends javax.swing.JFrame {
         
         //remove da lista o item que foi selecionado.
         modeloLista.remove(index);
+        
+        /*
+        controlar os botões e desabilita o alterar 
+        caso não exista mais registros. 
+        */
+        ControleBotoes(false);
 
     }//GEN-LAST:event_btn_deletarActionPerformed
 
@@ -385,6 +424,21 @@ public class AgendaForm extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_list_contatosValueChanged
+
+    private void btnMostraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostraActionPerformed
+        // TODO add your handling code here:
+        if (comb_tipo.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(rootPane, 
+                        "Informe o tipo de contato!");
+            return;
+        }
+        Tipos tipo_sel = (Tipos) comb_tipo.getSelectedItem();
+        String Msg = "Tipo Selecionado:\n"+ 
+                        tipo_sel.getId() +"\n" + tipo_sel.getApelido();
+        
+        JOptionPane.showMessageDialog(rootPane, Msg);
+        
+    }//GEN-LAST:event_btnMostraActionPerformed
 
     /**
      * @param args the command line arguments
@@ -422,6 +476,7 @@ public class AgendaForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnMostra;
     private javax.swing.JButton btn_alterar;
     private javax.swing.JButton btn_cancelar;
     private javax.swing.JButton btn_deletar;
