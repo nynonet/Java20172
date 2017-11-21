@@ -5,6 +5,13 @@
  */
 package br.edu.fasb;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -16,7 +23,7 @@ import javax.swing.JOptionPane;
 public class AgendaForm extends javax.swing.JFrame {
 
     private DefaultListModel modeloLista = new DefaultListModel();
-    
+    private boolean alterando = false;
 
     /**
      * Creates new form AgendaForm
@@ -26,7 +33,48 @@ public class AgendaForm extends javax.swing.JFrame {
         initComponents();
         CarregaDados();
         ControleBotoes(false);
-              
+
+    }
+    
+    /**
+     * Método desenvolvido para salvar a lista de contatos
+     * Site referência para o XStream = http://x-stream.github.io/tutorial.html
+     */
+    public void salvar() {
+        //verifica se há contato salvo, não havendo aborta. 
+        if (modeloLista.size() < 0) {
+            return;
+        }
+        
+        //Inicializa a biblioteca para transformar a lista de contatos em XML
+        XStream xml = new XStream();
+
+        //Criando uma lista de contatos do tipo Contato
+        List<Contato> dados = new ArrayList<>();
+        
+        //preenche a lista com os contatos de nossa modeloLista; 
+        for (int i = 0; i < modeloLista.size(); i++) {
+            //vai adicionando o contato na lista para gerar o xml
+            dados.add((Contato) modeloLista.get(i));
+        }
+        
+        //transforma todos os contatos em uma String de Dados
+        String dadosString = xml.toXML(dados);
+        
+        //gera um arquivo com o nome dados.xml obs.: será salvo na mesma pasta do projeto.
+        File arquivo = new File("dados.xml");
+        
+        try {
+            //Prepara pra a escrita o arquivo
+            FileOutputStream grava = new FileOutputStream(arquivo);
+            //escreve dentro do arquivo
+            grava.write(dadosString.getBytes());
+            //fecha o arquivo
+            grava.close();
+        } catch (IOException ex) {
+            //apresenta mesagem em caso de erro.
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -35,6 +83,24 @@ public class AgendaForm extends javax.swing.JFrame {
     private void CarregaDados() {
         comb_tipo.setModel(new DefaultComboBoxModel(Tipos.values()));
         list_contatos.setModel(modeloLista);
+
+        //ler um arquivo com o nome dados.xml
+        File f = new File("dados.xml");
+        //verifica se o arquivos existe
+        if (f.exists()) {
+            //se existir 
+            //Inicializa a biblioteca para transformar a o arquivo XML em uma lista de contatos
+            XStream xml = new XStream(new DomDriver());
+            //cria-se a lista de Contatos para receber do XML
+            List<Contato> dados = new ArrayList<>();
+            //Recebe do XML os contatos salvos
+            dados = (List<Contato>) xml.fromXML(f);
+            //Transpassa da lista de contato para o nosso modelo lista. 
+            for (Contato p : dados) {  //esse código é uma expressão lambda https://www.devmedia.com.br/como-usar-funcoes-lambda-em-java/32826
+                //adiciona os contatos salvos no modelo lista
+                modeloLista.addElement(p);
+            }
+        }
     }
 
     /**
@@ -46,10 +112,10 @@ public class AgendaForm extends javax.swing.JFrame {
         btn_salvar.setEnabled(habilita);
         btn_cancelar.setEnabled(habilita);
         btnMostra.setEnabled(habilita);
-        
+
         //esses abaixo será invertido o valor recebido
         btn_novo.setEnabled(!habilita);
-        
+
 //        if (!habilita) {
 //            //se não habilitar
 //            btn_alterar.setEnabled( false );
@@ -61,12 +127,11 @@ public class AgendaForm extends javax.swing.JFrame {
 //                btn_alterar.setEnabled( true );
 //            }
 //        }
-        
-        btn_alterar.setEnabled( ( !habilita && !modeloLista.isEmpty() ) );
+        btn_alterar.setEnabled((!habilita && !modeloLista.isEmpty()));
         /**
-         * Se Habilita = true e ModeloLista vazio restulado é [False]
-         * Se habilita = false e Modelolista não vazio resultado é [False]
-         * Se habilita = true e ModeloLista não vazio o resultao é [True]
+         * Se Habilita = true e ModeloLista vazio restulado é [False] Se
+         * habilita = false e Modelolista não vazio resultado é [False] Se
+         * habilita = true e ModeloLista não vazio o resultao é [True]
          */
         btn_deletar.setEnabled(!habilita);
         btn_finalizar.setEnabled(!habilita);
@@ -103,6 +168,7 @@ public class AgendaForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -124,8 +190,21 @@ public class AgendaForm extends javax.swing.JFrame {
         btn_finalizar = new javax.swing.JButton();
         btnMostra = new javax.swing.JButton();
 
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Agenda de Contatos");
+        setIconImages(null);
+        setIgnoreRepaint(true);
         setResizable(false);
 
         jLabel1.setText("Nome do Contato");
@@ -222,20 +301,17 @@ public class AgendaForm extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(edit_email)
                             .addComponent(edit_nome)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel3)
-                                        .addGap(68, 68, 68))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(edit_fixo, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(edit_fixo, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel3))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel4)
                                     .addComponent(edit_celular, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -250,22 +326,22 @@ public class AgendaForm extends javax.swing.JFrame {
                                             .addComponent(btn_salvar))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(btn_cancelar)
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(btn_alterar)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(btn_deletar))))
+                                                .addComponent(btn_deletar))
+                                            .addComponent(btn_cancelar)))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(comb_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(btnMostra, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGap(0, 6, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btn_finalizar)))
                 .addContainerGap())
         );
@@ -278,6 +354,7 @@ public class AgendaForm extends javax.swing.JFrame {
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(edit_nome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -298,12 +375,11 @@ public class AgendaForm extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(comb_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnMostra))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btn_salvar)
-                            .addComponent(btn_cancelar)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                            .addComponent(btn_cancelar))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btn_finalizar)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -318,6 +394,7 @@ public class AgendaForm extends javax.swing.JFrame {
 
     private void btn_finalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_finalizarActionPerformed
         // TODO add your handling code here:
+        salvar();
         System.exit(0);
     }//GEN-LAST:event_btn_finalizarActionPerformed
 
@@ -356,9 +433,19 @@ public class AgendaForm extends javax.swing.JFrame {
         novo.setEmail(edit_email.getText());
         novo.setTipo((Tipos) comb_tipo.getSelectedItem());
 
-        modeloLista.addElement(novo);
+        if (alterando == false) {
+            //gravando novo contato
+            modeloLista.addElement(novo);
+        } else {
+            //alterando um contato
+            //captura o indice do contato sendo alterado
+            int index = list_contatos.getSelectedIndex();
+            //atualiza o contato
+            modeloLista.set(index, novo);
+        }
 
         ControleBotoes(false); //desativar o botão
+        alterando = false;
     }//GEN-LAST:event_btn_salvarActionPerformed
 
     private void btn_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelarActionPerformed
@@ -380,6 +467,7 @@ public class AgendaForm extends javax.swing.JFrame {
     private void btn_alterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_alterarActionPerformed
         // cliquei no botão Alterar
         ControleBotoes(true); //ativar o botão
+        alterando = true;
     }//GEN-LAST:event_btn_alterarActionPerformed
 
     private void btn_deletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_deletarActionPerformed
@@ -396,20 +484,20 @@ public class AgendaForm extends javax.swing.JFrame {
         //captura o item que desejamos apagar;
         int index = list_contatos.getSelectedIndex();
 
-        if (JOptionPane.showConfirmDialog(rootPane, 
-                "Confirma a exclusão?", 
-                "Remover Contato", 
+        if (JOptionPane.showConfirmDialog(rootPane,
+                "Confirma a exclusão?",
+                "Remover Contato",
                 JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
             return;
         }
-        
+
         //remove da lista o item que foi selecionado.
         modeloLista.remove(index);
-        
+
         /*
         controlar os botões e desabilita o alterar 
         caso não exista mais registros. 
-        */
+         */
         ControleBotoes(false);
 
     }//GEN-LAST:event_btn_deletarActionPerformed
@@ -428,45 +516,23 @@ public class AgendaForm extends javax.swing.JFrame {
     private void btnMostraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostraActionPerformed
         // TODO add your handling code here:
         if (comb_tipo.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(rootPane, 
-                        "Informe o tipo de contato!");
+            JOptionPane.showMessageDialog(rootPane,
+                    "Informe o tipo de contato!");
             return;
         }
         Tipos tipo_sel = (Tipos) comb_tipo.getSelectedItem();
-        String Msg = "Tipo Selecionado:\n"+ 
-                        tipo_sel.getId() +"\n" + tipo_sel.getApelido();
-        
+        String Msg = "Tipo Selecionado:\n"
+                + tipo_sel.getId() + "\n" + tipo_sel.getApelido();
+
         JOptionPane.showMessageDialog(rootPane, Msg);
-        
+
     }//GEN-LAST:event_btnMostraActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AgendaForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AgendaForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AgendaForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AgendaForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
+ 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -494,6 +560,7 @@ public class AgendaForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList<String> list_contatos;
     // End of variables declaration//GEN-END:variables

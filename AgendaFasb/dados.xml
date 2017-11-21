@@ -1,0 +1,30 @@
+<list>
+  <br.edu.fasb.Contato>
+    <nome>Andeson de Jesus de Menezes</nome>
+    <telefone>000</telefone>
+    <celular>0009918</celular>
+    <email>andeson@fasb.edu.br</email>
+    <tipo>OUTROS</tipo>
+  </br.edu.fasb.Contato>
+  <br.edu.fasb.Contato>
+    <nome>José Alex</nome>
+    <telefone>0090</telefone>
+    <celular>89748936</celular>
+    <email>josealex@alexecia.com</email>
+    <tipo>TRABALHO</tipo>
+  </br.edu.fasb.Contato>
+  <br.edu.fasb.Contato>
+    <nome>Jose Nilton</nome>
+    <telefone>980898</telefone>
+    <celular>109830291</celular>
+    <email>radar@radaca.com</email>
+    <tipo>OUTROS</tipo>
+  </br.edu.fasb.Contato>
+  <br.edu.fasb.Contato>
+    <nome>andeson jjj </nome>
+    <telefone>alsdj</telefone>
+    <celular>102938</celular>
+    <email>98928392</email>
+    <tipo>TRABALHO</tipo>
+  </br.edu.fasb.Contato>
+</list>
